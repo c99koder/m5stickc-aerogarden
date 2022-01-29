@@ -13,6 +13,7 @@ Monitor the status of an [AeroGarden](https://www.aerogarden.com/) in [Home Assi
 * [M5Stack ENV III](https://docs.m5stack.com/en/unit/envIII) environmental sensor
 * [M5Stack NCIR](https://docs.m5stack.com/en/unit/ncir) IR temperature sensor
 
+Sensor are mounted under the grow platform, facing down towards the water.
 ## Software
 
 The contents of `src/main.py` can be pasted into [UIFlow](https://flow.m5stack.com/) and deployed to the microcontroller over-the-air, or installed directly to the microcontroller in USB mode using the [vscode-m5stack-mpy](https://marketplace.visualstudio.com/items?itemName=curdeveryday.vscode-m5stack-mpy) extension.
