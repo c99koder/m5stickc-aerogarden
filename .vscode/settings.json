@@ -1,0 +1,41 @@
+{
+    "python.linting.enabled": true,
+    "python.jediEnabled": false,
+    "python.autoComplete.extraPaths": [
+        ".micropy/BradenM-micropy-stubs-adb6f18/frozen",
+        ".micropy/BradenM-micropy-stubs-4f5a52a/frozen",
+        ".micropy/BradenM-micropy-stubs-adb6f18/stubs",
+        ".micropy/AeroGarden",
+        "stubs/uiflow_stickc_plus"
+    ],
+    "python.autoComplete.typeshedPaths": [
+        ".micropy/BradenM-micropy-stubs-adb6f18/frozen",
+        ".micropy/BradenM-micropy-stubs-4f5a52a/frozen",
+        ".micropy/BradenM-micropy-stubs-adb6f18/stubs",
+        ".micropy/AeroGarden",
+        "stubs/uiflow_stickc_plus"
+    ],
+    "python.analysis.typeshedPaths": [
+        ".micropy/BradenM-micropy-stubs-adb6f18/frozen",
+        ".micropy/BradenM-micropy-stubs-4f5a52a/frozen",
+        ".micropy/BradenM-micropy-stubs-adb6f18/stubs",
+        ".micropy/AeroGarden",
+        "stubs/uiflow_stickc_plus"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.analysis.extraPaths": [
+        ".micropy/BradenM-micropy-stubs-3b842ec/frozen",
+        ".micropy/BradenM-micropy-stubs-b3febf0/frozen",
+        ".micropy/BradenM-micropy-stubs-3b842ec/stubs",
+        ".micropy/uiflow_stickc_plus"
+    ],
+    "python.languageServer": "None",
+    "vsmqtt.brokerProfiles": [
+        {
+            "name": "mqtt",
+            "host": "pi.local",
+            "port": 1883,
+            "clientId": "vsmqtt_client"
+        }
+    ]
+}
