@@ -66,13 +66,17 @@ def publish_states():
     publish_configuration("aerogarden_water_distance", "AeroGarden Water Distance", None, "mm")
     publish_configuration("aerogarden_water_level", "AeroGarden Water Level", None, "%")
     publish_configuration("aerogarden_battery_level", "AeroGarden Battery Level", "battery", "%")
-    publish_state("aerogarden_temperature", int(round(Fahrenheit(env3.temperature),0)))
+    t = int(round(Fahrenheit(env3.temperature),0))
+    if t < 1000:
+        publish_state("aerogarden_temperature", int(round(Fahrenheit(env3.temperature),0)))
     publish_state("aerogarden_humidity", int(round(env3.humidity,0)))
     publish_state("aerogarden_pressure", int(round(env3.pressure / 100,0)))
-    publish_state("aerogarden_water_temperature", int(round(Fahrenheit(ncir.temperature),0)))
+    t = int(round(Fahrenheit(ncir.temperature),0))
+    if t < 1000:
+        publish_state("aerogarden_water_temperature", int(round(Fahrenheit(ncir.temperature),0)))
     publish_state("aerogarden_battery_level", map_value(axp.getBatVoltage(), 3.7, 4.1, 0, 100))
     publish_state("aerogarden_water_distance", distance)
-    publish_state("aerogarden_water_level", 100 - int(map_value(distance, 20, MAX_DISTANCE, 0, 100)))
+    publish_state("aerogarden_water_level", 100 - int(map_value(distance, 18, MAX_DISTANCE, 0, 100)))
 
 def set_brightness(level):
     axp.setLcdBrightness(int(level))
@@ -97,6 +101,6 @@ while True:
     stat_screen("Humidity", str(int(round(env3.humidity, 0))) + " %")
     wait(20)
     distance = int(round(ultrasonic.distance,0))
-    stat_screen("Water Level", str(100 - int(map_value(distance, 20, MAX_DISTANCE, 0, 100))) + " %")
+    stat_screen("Water Level", str(100 - int(map_value(distance, 18, MAX_DISTANCE, 0, 100))) + " %")
     wait(20)
     publish_states()
