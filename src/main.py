@@ -68,12 +68,12 @@ def publish_states():
     publish_configuration("aerogarden_battery_level", "AeroGarden Battery Level", "battery", "%")
     t = int(round(Fahrenheit(env3.temperature),0))
     if t < 1000:
-        publish_state("aerogarden_temperature", int(round(Fahrenheit(env3.temperature),0)))
+        publish_state("aerogarden_temperature", t)
     publish_state("aerogarden_humidity", int(round(env3.humidity,0)))
     publish_state("aerogarden_pressure", int(round(env3.pressure / 100,0)))
     t = int(round(Fahrenheit(ncir.temperature),0))
     if t < 1000:
-        publish_state("aerogarden_water_temperature", int(round(Fahrenheit(ncir.temperature),0)))
+        publish_state("aerogarden_water_temperature", t)
     publish_state("aerogarden_battery_level", map_value(axp.getBatVoltage(), 3.7, 4.1, 0, 100))
     publish_state("aerogarden_water_distance", distance)
     publish_state("aerogarden_water_level", 100 - int(map_value(distance, 18, MAX_DISTANCE, 0, 100)))
