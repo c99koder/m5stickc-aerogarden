@@ -51,9 +51,9 @@ def Fahrenheit(temperature):
 
 def publish_configuration(entity, name, device_class, unit_of_measurement):
     if device_class is not None:
-        m5mqtt.publish("homeassistant/sensor/" + entity + "/config", json.dumps({"name": name, "unit_of_measurement": unit_of_measurement, "device_class": device_class, "state_topic": "homeassistant/sensor/" + entity + "/state"}).encode('utf-8'))
+        m5mqtt.publish("homeassistant/sensor/" + entity + "/config", json.dumps({"unique_id": MQTT_CLIENT + "_" + entity, "name": name, "unit_of_measurement": unit_of_measurement, "device_class": device_class, "state_topic": "homeassistant/sensor/" + entity + "/state"}).encode('utf-8'))
     else:
-        m5mqtt.publish("homeassistant/sensor/" + entity + "/config", json.dumps({"name": name, "unit_of_measurement": unit_of_measurement, "state_topic": "homeassistant/sensor/" + entity + "/state"}).encode('utf-8'))
+        m5mqtt.publish("homeassistant/sensor/" + entity + "/config", json.dumps({"unique_id": MQTT_CLIENT + "_" + entity, "name": name, "unit_of_measurement": unit_of_measurement, "state_topic": "homeassistant/sensor/" + entity + "/state"}).encode('utf-8'))
 
 def publish_state(entity, state):
     m5mqtt.publish("homeassistant/sensor/" + entity + "/state", str(state))
