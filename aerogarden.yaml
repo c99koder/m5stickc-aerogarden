@@ -64,6 +64,7 @@ time:
 
 text_sensor:
   - platform: version
+    name: "${upper_devicename} Firmware Version"
     id: esphome_version
 
 interval:
@@ -183,13 +184,8 @@ sensor:
     lambda: |-
       auto mlx = new MLX90614(30000);   
       App.register_component(mlx);
-      return {mlx->ambient_temperature_sensor, mlx->object_temperature_sensor};
+      return {mlx->object_temperature_sensor};
     sensors:
-      - name: "${upper_devicename} Tank Temperature"
-        unit_of_measurement: °C
-        device_class: temperature
-        accuracy_decimals: 1
-        id: tank_temp
       - name: "${upper_devicename} Water Temperature"
         unit_of_measurement: °C
         device_class: temperature
@@ -197,16 +193,17 @@ sensor:
         id: water_temp
 
   - platform: wifi_signal
-    name: ${upper_devicename} WiFi Signal
-    id: wifi_dbm
+    name: "${upper_devicename} WiFi Signal"
 
   - platform: uptime
-    name: ${upper_devicename} Uptime
+    name: "${upper_devicename} Uptime"
 
   - platform: axp192
     address: 0x34
     i2c_id: bus_b
     id: backlight
+    battery_level:
+      name: ${upper_devicename} Battery Level
     brightness: 0.5
 
   - platform: sht3xd
