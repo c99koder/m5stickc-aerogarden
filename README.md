@@ -30,7 +30,7 @@ Home Assistant automatically discovers the sensors using [MQTT Discovery](https:
 
 ## Previous Version
 
-The previous version of this project has been moved to the [UIFlow](/c99koder/m5stickc-aerogarden/tree/UIFlow) branch.
+The previous version of this project has been moved to the [UIFlow](https://github.com/c99koder/m5stickc-aerogarden/tree/UIFlow) branch.
 
 ## License
 
