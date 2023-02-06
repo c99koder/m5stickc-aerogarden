@@ -24,7 +24,7 @@ esphome run aerogarden.yaml
 
 ## Home Assistant
 
-Home Assistant automatically discovers the sensors using [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/).  I created 2 helper entities to control the LCD backlight and LED.  The helper entity states are published to MQTT topics using [Node-RED](https://nodered.org/).  Home Assistant automations can be used to turn the LCD off during the night, or turn the LED on when the water level is low.
+Home Assistant automatically discovers the sensors when the device connects to the network.  I created a helper entity to control the LCD backlight.  Home Assistant automations can be used to turn the LCD off during the night or adjust the level based on ambient room lighting.
 
 ![HomeAssistant](github/homeassistant.png)
 
