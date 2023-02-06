@@ -163,6 +163,11 @@ binary_sensor:
       number: GPIO37
       inverted: true
     id: button_a
+    on_press:
+      then:
+        - sensor.template.publish:
+            id: plant_food_added
+            state: !lambda 'return id(homeassistant_time).now().timestamp;'
   - platform: gpio
     pin:
       number: GPIO39
@@ -170,6 +175,11 @@ binary_sensor:
     id: button_b
 
 sensor:
+  - platform: template
+    name: "${upper_devicename} Plant Food Added"
+    device_class: timestamp
+    id: plant_food_added
+
   - platform: homeassistant
     id: brightness
     entity_id: input_number.aerogarden_lcd_brightness
