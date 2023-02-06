@@ -1,0 +1,231 @@
+substitutions:
+  devicename: "aerogarden"
+  upper_devicename: "AeroGarden"
+
+esphome:
+  name: ${devicename}
+  includes:
+    - esphome-mlx90614-i2c_IR_temp_sensor/custom/mlx90614.h
+  libraries:
+  - Wire
+  - SPI
+  - https://github.com/adafruit/Adafruit_BusIO.git
+  - https://github.com/adafruit/Adafruit-MLX90614-Library.git
+
+esp32:
+  board: m5stick-c
+  framework:
+    type: arduino
+
+external_components:
+  - source: github://airy10/esphome-m5stickC
+    components: [ axp192 ]
+
+logger:
+
+api:
+  encryption:
+    key: !secret encryption_key
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: $devicename Fallback Hotspot
+    password: !secret wifi_password
+
+status_led:
+  pin:
+    number: GPIO10
+    inverted: true
+
+spi:
+  clk_pin: GPIO13
+  mosi_pin: GPIO15
+
+i2c:
+  - id: bus_a
+    sda: GPIO32
+    scl: GPIO33
+    scan: true
+    frequency: 50kHz
+
+  - id: bus_b
+    sda: GPIO21
+    scl: GPIO22
+    scan: true
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+text_sensor:
+  - platform: version
+    id: esphome_version
+
+interval:
+  - interval: 6s
+    then:
+      - if:
+          condition:
+            wifi.connected:
+          then:
+            - display.page.show_next: display1
+            - if:
+                condition:
+                  display.is_displaying_page: page_startup
+                then:
+                  - display.page.show_next: display1
+            - component.update: display1
+          else:
+            - display.page.show: page_startup
+            - component.update: display1
+
+display:
+  - platform: st7789v
+    model: TTGO TDisplay 135x240
+    cs_pin: GPIO5
+    dc_pin: GPIO23
+    reset_pin: GPIO18
+    rotation: 90
+    id: display1
+    pages:
+      - id: page_startup
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), white, TextAlign::CENTER, "Connecting");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_14), white, TextAlign::CENTER, id(esphome_version).state.c_str());
+      - id: page_time
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Time");
+          it.strftime(it.get_width()/2, it.get_height()/2 + 8, id(roboto_54), TextAlign::CENTER, "%H:%M", id(homeassistant_time).now());
+          it.strftime(it.get_width()/2, it.get_height()/2 + 52, id(roboto_32), TextAlign::CENTER, "%m/%d/%Y", id(homeassistant_time).now());
+      - id: page_air_temp
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Air Temp.");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f °F", id(air_temp).state * (9.0/5.0) + 32.0);
+      - id: page_air_pressure
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Air Pressure");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f psi", id(humidity).state);
+      - id: page_humidity
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Humidity");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f %%", id(humidity).state);
+      - id: page_water_temp
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Water Temp.");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f °F", id(water_temp).state * (9.0/5.0) + 32.0);
+
+font:
+  - file: "gfonts://Roboto"
+    id: roboto_14
+    size: 14
+
+  - file: "gfonts://Roboto"
+    id: roboto_32
+    size: 32
+
+  - file: "gfonts://Roboto"
+    id: roboto_54
+    size: 54
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO37
+      inverted: true
+    id: button_a
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    id: button_b
+
+sensor:
+  - platform: homeassistant
+    id: brightness
+    entity_id: input_number.aerogarden_lcd_brightness
+    internal: true
+    on_value:
+      then:
+        lambda: |-
+          id(backlight).set_brightness(id(brightness).state/100.0);
+          id(backlight).update();
+
+  - platform: custom 
+    lambda: |-
+      auto mlx = new MLX90614(30000);   
+      App.register_component(mlx);
+      return {mlx->ambient_temperature_sensor, mlx->object_temperature_sensor};
+    sensors:
+      - name: "${upper_devicename} Tank Temperature"
+        unit_of_measurement: °C
+        device_class: temperature
+        accuracy_decimals: 1
+        id: tank_temp
+      - name: "${upper_devicename} Water Temperature"
+        unit_of_measurement: °C
+        device_class: temperature
+        accuracy_decimals: 1
+        id: water_temp
+
+  - platform: wifi_signal
+    name: ${upper_devicename} WiFi Signal
+    id: wifi_dbm
+
+  - platform: uptime
+    name: ${upper_devicename} Uptime
+
+  - platform: axp192
+    address: 0x34
+    i2c_id: bus_b
+    id: backlight
+    brightness: 0.5
+
+  - platform: sht3xd
+    i2c_id: bus_a
+    temperature:
+      name: ${upper_devicename} Temperature
+      id: air_temp
+    humidity:
+      name: ${upper_devicename} Humidity
+      id: humidity
+    address: 0x44
+    update_interval: 60s
+
+  - platform: qmp6988
+    i2c_id: bus_a
+    pressure:
+      name: ${upper_devicename} Air Pressure
+      oversampling: 16x
+      id: air_pressure
+    address: 0x70
+    update_interval: 60s
+    iir_filter: 2x
