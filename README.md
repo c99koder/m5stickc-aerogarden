@@ -31,7 +31,7 @@ esphome run aerogarden.yaml
 
 ## Home Assistant
 
-Home Assistant automatically discovers the sensors when the device connects to the network.  I created a helper entity to control the LCD backlight.  Home Assistant automations can be used to turn the LCD off during the night or adjust the level based on ambient room lighting.
+Home Assistant automatically discovers the sensors when the device connects to the network.  I created a helper entity to control the LCD backlight.  Home Assistant automations can be used to turn the LCD off during the night or adjust the level based on ambient room lighting. Pressing the button on the front of the device resets the plant food timestamp.
 
 ![HomeAssistant](github/homeassistant.png)
 
