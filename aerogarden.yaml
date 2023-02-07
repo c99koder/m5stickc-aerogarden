@@ -126,7 +126,7 @@ display:
           it.rectangle(0,0,it.get_width(),49,white);
           it.filled_rectangle(1,1,it.get_width()-1,48,red);
           it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Air Pressure");
-          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f psi", id(humidity).state);
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f hPa", id(air_pressure).state);
       - id: page_humidity
         lambda: |-
           auto red = Color(255, 0, 0);
