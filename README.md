@@ -16,6 +16,12 @@ Sensors are mounted under the grow platform, facing down towards the water.
 
 ## Software
 
+Install the required git submodules:
+
+```sh
+git submodule init
+```
+
 Build and deploy the firmware using the ESPHome dashboard or from the command line:
 
 ```sh
