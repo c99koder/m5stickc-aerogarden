@@ -157,6 +157,12 @@ font:
     id: roboto_54
     size: 54
 
+globals:
+  - id: plant_food_timestamp
+    type: time_t
+    restore_value: yes
+    initial_value: '0'
+
 binary_sensor:
   - platform: gpio
     pin:
@@ -167,7 +173,7 @@ binary_sensor:
       then:
         - sensor.template.publish:
             id: plant_food_added
-            state: !lambda 'return id(homeassistant_time).now().timestamp;'
+            state: !lambda 'id(plant_food_timestamp) = id(homeassistant_time).now().timestamp; return id(plant_food_timestamp);'
   - platform: gpio
     pin:
       number: GPIO39
@@ -179,6 +185,7 @@ sensor:
     name: "${upper_devicename} Plant Food Added"
     device_class: timestamp
     id: plant_food_added
+    lambda: !lambda 'if (id(plant_food_timestamp) != 0) {return id(plant_food_timestamp); } else {return {}; } ;'
 
   - platform: homeassistant
     id: brightness
