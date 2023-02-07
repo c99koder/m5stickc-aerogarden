@@ -9,8 +9,8 @@ Monitor the status of an [AeroGarden](https://www.aerogarden.com/) in [Home Assi
 
 * AeroGarden Sprout LED
 * [M5StickC-Plus microcontroller](https://docs.m5stack.com/en/core/m5stickc_plus)
-* [M5Stack ENV III](https://docs.m5stack.com/en/unit/envIII) environmental sensor
-* [M5Stack NCIR](https://docs.m5stack.com/en/unit/ncir) IR temperature sensor
+* [M5Stack ENV III](https://docs.m5stack.com/en/unit/envIII) environmental sensor ([SHT30](https://esphome.io/components/sensor/sht3xd.html), [QMP6988](https://esphome.io/components/sensor/qmp6988.html))
+* [M5Stack NCIR](https://docs.m5stack.com/en/unit/ncir) IR temperature sensor ([MLX90614](https://github.com/3gyptian/esphome-mlx90614-i2c_IR_temp_sensor))
 
 Sensors are mounted under the grow platform, facing down towards the water.
 
