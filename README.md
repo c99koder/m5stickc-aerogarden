@@ -20,6 +20,7 @@ Install the required git submodules:
 
 ```sh
 git submodule init
+git submodule update
 ```
 
 Build and deploy the firmware using the ESPHome dashboard or from the command line:
