@@ -22,8 +22,7 @@ external_components:
     components: [ axp192 ]
 
 logger:
-
-debug:
+  level: INFO
 
 api:
   encryption:
@@ -145,6 +144,22 @@ display:
           it.filled_rectangle(1,1,it.get_width()-1,48,red);
           it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Water Temp.");
           it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f °F", id(water_temp).state * (9.0/5.0) + 32.0);
+      - id: page_eco2
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Carbon Dioxide");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f ppm", id(eco2).state);
+      - id: page_tvoc
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "TVOC");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f ppb", id(tvoc).state);
 
 font:
   - file: "gfonts://Roboto"
@@ -210,7 +225,7 @@ sensor:
         device_class: temperature
         accuracy_decimals: 1
         id: water_temp
-
+  
   - platform: wifi_signal
     name: ${upper_devicename} WiFi Signal
 
@@ -230,11 +245,16 @@ sensor:
     temperature:
       name: ${upper_devicename} Temperature
       id: air_temp
+      filters:
+        - filter_out: nan
+        - throttle_average: 60s
     humidity:
       name: ${upper_devicename} Humidity
       id: humidity
-    address: 0x44
-    update_interval: 60s
+      filters:
+        - filter_out: nan
+        - throttle_average: 60s
+    update_interval: 1s
 
   - platform: qmp6988
     i2c_id: bus_a
@@ -242,24 +262,30 @@ sensor:
       name: ${upper_devicename} Air Pressure
       oversampling: 16x
       id: air_pressure
-    address: 0x70
-    update_interval: 60s
+      filters:
+        - filter_out: nan
+        - throttle_average: 60s
     iir_filter: 2x
+    update_interval: 1s
 
-  - platform: template
-    name: ${upper_devicename} Free HEAP
-    lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-    icon: "mdi:memory"
-    entity_category: diagnostic
-    state_class: measurement
-    unit_of_measurement: "B"
-    update_interval: 60s
-
-  - platform: debug
-    free:
-      name: ${upper_devicename} Free RAM
-      icon: "mdi:memory"
-      entity_category: diagnostic
-      state_class: measurement
-      unit_of_measurement: "B"
-  
+  - platform: sgp30
+    i2c_id: bus_a
+    eco2:
+      name: ${upper_devicename} eCO2
+      accuracy_decimals: 1
+      id: eco2
+      filters:
+        - filter_out: nan
+        - throttle_average: 60s
+    tvoc:
+      name: ${upper_devicename} TVOC
+      accuracy_decimals: 1
+      id: tvoc
+      filters:
+        - filter_out: nan
+        - throttle_average: 60s
+    store_baseline: yes
+    update_interval: 1s
+    compensation:
+      temperature_source: air_temp
+      humidity_source: humidity
