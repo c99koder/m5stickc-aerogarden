@@ -23,6 +23,8 @@ external_components:
 
 logger:
 
+debug:
+
 api:
   encryption:
     key: !secret encryption_key
@@ -64,7 +66,7 @@ time:
 
 text_sensor:
   - platform: version
-    name: "${upper_devicename} Firmware Version"
+    name: ${upper_devicename} Firmware Version
     id: esphome_version
 
 interval:
@@ -182,7 +184,7 @@ binary_sensor:
 
 sensor:
   - platform: template
-    name: "${upper_devicename} Plant Food Added"
+    name: ${upper_devicename} Plant Food Added
     device_class: timestamp
     id: plant_food_added
     lambda: !lambda 'if (id(plant_food_timestamp) != 0) {return id(plant_food_timestamp); } else {return {}; } ;'
@@ -203,17 +205,17 @@ sensor:
       App.register_component(mlx);
       return {mlx->object_temperature_sensor};
     sensors:
-      - name: "${upper_devicename} Water Temperature"
+      - name: ${upper_devicename} Water Temperature
         unit_of_measurement: °C
         device_class: temperature
         accuracy_decimals: 1
         id: water_temp
 
   - platform: wifi_signal
-    name: "${upper_devicename} WiFi Signal"
+    name: ${upper_devicename} WiFi Signal
 
   - platform: uptime
-    name: "${upper_devicename} Uptime"
+    name: ${upper_devicename} Uptime
 
   - platform: axp192
     address: 0x34
@@ -243,3 +245,21 @@ sensor:
     address: 0x70
     update_interval: 60s
     iir_filter: 2x
+
+  - platform: template
+    name: ${upper_devicename} Free HEAP
+    lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    icon: "mdi:memory"
+    entity_category: diagnostic
+    state_class: measurement
+    unit_of_measurement: "B"
+    update_interval: 60s
+
+  - platform: debug
+    free:
+      name: ${upper_devicename} Free RAM
+      icon: "mdi:memory"
+      entity_category: diagnostic
+      state_class: measurement
+      unit_of_measurement: "B"
+  
