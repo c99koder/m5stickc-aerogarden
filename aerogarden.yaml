@@ -59,6 +59,11 @@ i2c:
     scl: GPIO22
     scan: true
 
+button:
+  - platform: restart
+    name: ${upper_devicename} Restart
+    entity_category: diagnostic
+
 time:
   - platform: homeassistant
     id: homeassistant_time
@@ -67,6 +72,7 @@ text_sensor:
   - platform: version
     name: ${upper_devicename} Firmware Version
     id: esphome_version
+    entity_category: diagnostic
 
 interval:
   - interval: 6s
@@ -228,9 +234,11 @@ sensor:
   
   - platform: wifi_signal
     name: ${upper_devicename} WiFi Signal
+    entity_category: diagnostic
 
   - platform: uptime
     name: ${upper_devicename} Uptime
+    entity_category: diagnostic
 
   - platform: axp192
     address: 0x34
