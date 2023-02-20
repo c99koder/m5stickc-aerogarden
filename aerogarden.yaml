@@ -246,7 +246,7 @@ sensor:
         return {};
       }
     update_interval: 60s
-    unit_of_measurement: "%%"
+    unit_of_measurement: "%"
     accuracy_decimals: 0
 
   - platform: template
