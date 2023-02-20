@@ -6,11 +6,13 @@ esphome:
   name: ${devicename}
   includes:
     - esphome-mlx90614-i2c_IR_temp_sensor/custom/mlx90614.h
+    - esphome-customisations/vl6180x/vl6180x_sensor.h
   libraries:
-  - Wire
-  - SPI
-  - https://github.com/adafruit/Adafruit_BusIO.git
-  - https://github.com/adafruit/Adafruit-MLX90614-Library.git
+    - Wire
+    - SPI
+    - https://github.com/adafruit/Adafruit_BusIO.git
+    - https://github.com/adafruit/Adafruit-MLX90614-Library.git
+    - https://github.com/adafruit/Adafruit_VL6180X.git
 
 esp32:
   board: m5stick-c
@@ -85,7 +87,7 @@ interval:
           condition:
             and:
               - wifi.connected:
-              - lambda: 'return (id(homeassistant_time).now().timestamp - id(plant_food_timestamp)) > (14 * 86400);'
+              - lambda: 'return (id(water_distance).state > 85) || ((id(homeassistant_time).now().timestamp - id(plant_food_timestamp)) > (14 * 86400));'
           then:
             - light.turn_on:
                 id: plant_food_light
@@ -165,6 +167,14 @@ display:
           it.filled_rectangle(1,1,it.get_width()-1,48,red);
           it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Water Temp.");
           it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f °F", id(water_temp).state * (9.0/5.0) + 32.0);
+      - id: page_water_level
+        lambda: |-
+          auto red = Color(255, 0, 0);
+          auto white = Color(255, 255, 255);
+          it.rectangle(0,0,it.get_width(),49,white);
+          it.filled_rectangle(1,1,it.get_width()-1,48,red);
+          it.print(it.get_width()/2, 25, id(roboto_32), TextAlign::CENTER, "Water Level");
+          it.printf(it.get_width()/2, it.get_height()/2 + 24, id(roboto_54), TextAlign::CENTER, "%.0f %%", id(water_level).state);
       - id: page_eco2
         lambda: |-
           auto red = Color(255, 0, 0);
@@ -222,6 +232,24 @@ binary_sensor:
 
 sensor:
   - platform: template
+    name: ${upper_devicename} Water Level
+    id: water_level
+    lambda: |-
+      if (id(water_distance).state != NAN) {
+        float distance = id(water_distance).state - 40;
+        if (distance < 0)
+          distance = 0;
+        if (distance > 60)
+          distance = 60;
+        return 100.0f - (distance / 60.0f * 100.0f);
+      } else {
+        return {};
+      }
+    update_interval: 60s
+    unit_of_measurement: "%%"
+    accuracy_decimals: 0
+
+  - platform: template
     name: ${upper_devicename} Plant Food Added
     device_class: timestamp
     id: plant_food_added
@@ -249,6 +277,18 @@ sensor:
         accuracy_decimals: 1
         id: water_temp
   
+  - platform: custom
+    lambda: |-
+      auto vl6180x_sensor = new VL6180XSensor();
+      App.register_component(vl6180x_sensor);
+      return {vl6180x_sensor->distance_sensor};
+    sensors:
+      - name: ${upper_devicename} Water Distance
+        id: water_distance
+        unit_of_measurement: mm
+        device_class: distance
+        accuracy_decimals: 0
+
   - platform: wifi_signal
     name: ${upper_devicename} WiFi Signal
     entity_category: diagnostic

@@ -1,3 +1,6 @@
 [submodule "esphome-mlx90614-i2c_IR_temp_sensor"]
 	path = esphome-mlx90614-i2c_IR_temp_sensor
 	url = https://github.com/3gyptian/esphome-mlx90614-i2c_IR_temp_sensor
+[submodule "esphome-customisations"]
+	path = esphome-customisations
+	url = https://github.com/exxamalte/esphome-customisations.git
